@@ -28,7 +28,7 @@ public class AudioSpectrumDrawer : UnityEngine.UI.Graphic {
 
 		for (int i = 0; i < m_AudioSpectrum.ProcessedAudioData.Length; i++) {
 			float remappedPosX = Remap (i / (m_AudioSpectrum.ProcessedAudioData.Length - 1f), 0f, 1f, m_LeftOffset, -Mathf.Abs(m_RightOffset - m_LeftOffset) + m_LeftOffset);
-			AddVerticalLine (vh, new Vector3(remappedPosX, 0f, 0f), m_AudioSpectrum.ProcessedAudioData[i], 4f, Color.white);
+			AddVerticalLine (vh, new Vector3(remappedPosX, 0f, 0f), m_AudioSpectrum.ProcessedAudioData[i], 4f, color);
 		}
 	}
 
