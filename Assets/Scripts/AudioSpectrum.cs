@@ -25,6 +25,10 @@ public class AudioSpectrum : MonoBehaviour {
 	[SerializeField] private float m_WindowSkew;
 	[SerializeField, Range(0f, 1f)] private float m_SmoothingTimeConstant;
 
+	public int AudioDuration { get { return m_AudioDuration; } set { m_AudioDuration = value; }}
+	public int SampleRate { get { return m_SampleRate; } set { m_SampleRate = value; }}
+	public int OutputResolution { get { return m_OutputResolution; } set { m_OutputResolution = value; }}
+	public float OutputMultiplier { get { return m_OutputMultiplier; } set { m_OutputMultiplier = value; }}
 	public float[] ProcessedAudioData { get; private set; }
 
 	private readonly float[] m_OutputAudioData = new float[8196];
