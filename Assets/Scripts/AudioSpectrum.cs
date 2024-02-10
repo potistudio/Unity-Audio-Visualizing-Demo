@@ -1,0 +1,122 @@
+
+using System.Linq;
+using UnityEngine;
+using Unity.Jobs;
+using Alchemy.Inspector;
+
+#if UNITY_EDITOR
+	using UnityEditor;
+#endif
+
+public class AudioSpectrum : MonoBehaviour {
+	[SerializeField] private AudioSource m_AudioSource;
+
+	[Title("Audio Settings")]
+	[SerializeField] private int m_AudioDuration;
+	[SerializeField] private int m_MinFrequency;
+	[SerializeField] private int m_MaxFrequency;
+
+	[Title("Output Settings")]
+	[SerializeField, LabelText("Resolution")] private int m_OutputResolution;
+	[SerializeField, LabelText("Multiplier")] private float m_OutputMultiplier;
+	[SerializeField, LabelText("Width")] private float m_DrawWidth;
+
+	[Title("Legacy Settings")]
+	[SerializeField] private float m_WindowSkew;
+	[SerializeField, Range(0f, 1f)] private float m_SmoothingTimeConstant;
+
+	public float[] ProcessedAudioData { get; private set; }
+
+	private readonly float[] m_OutputAudioData = new float[8196];
+	private int m_SampleRate = 48000;
+
+	private float Remap (float _x, float _inMin, float _inMax, float _outMin, float _outMax) {
+		return (_x - _inMax) / (_inMax - _inMin) * (_outMax - _outMin) + _outMin;
+	}
+
+	private void OnValidate() {
+		int maxAudioDuration = Mathf.FloorToInt (8196 / (m_SampleRate * 0.001f));
+
+		if (m_AudioDuration < 0) m_AudioDuration = 0;
+		if (m_AudioDuration > maxAudioDuration) m_AudioDuration = maxAudioDuration;
+		if (m_OutputResolution < 0) m_OutputResolution = 0;
+		if (m_MinFrequency < 0) m_MinFrequency = 0;
+		if (m_MaxFrequency < 0) m_MaxFrequency = 0;
+		if (m_DrawWidth < 0f) m_DrawWidth = 0f;
+		if (m_WindowSkew < 0f) m_WindowSkew = 0f;
+		if (m_SmoothingTimeConstant < 0f) m_SmoothingTimeConstant = 0f;
+		if (m_SmoothingTimeConstant > 1f) m_SmoothingTimeConstant = 1f;
+	}
+
+	private void Start() {
+		m_SampleRate = AudioSettings.outputSampleRate;
+	}
+
+	private void Update() {
+		// Get Output Waveform
+		m_AudioSource.GetOutputData (m_OutputAudioData, 0);
+
+		//* Use Mono *// 17ms
+		// ProcessedAudioData = m_GoertzelSpectrumMono.Execute (m_OutputAudioData);
+
+		//* Use Job System *// 5ms
+		// Prepare Output Buffer
+		float[] processedSpectrum = new float[m_OutputResolution];
+		Unity.Collections.NativeArray<float> processedSpectrumBuffer = new (m_OutputResolution, Unity.Collections.Allocator.TempJob);
+
+		// Prepare Waveform Data as NativeArray
+		Unity.Collections.NativeArray<float> source = new (8196, Unity.Collections.Allocator.TempJob);
+		source.CopyFrom (m_OutputAudioData);
+
+		// Create Job
+		GoertzelSpectrumJob job = new() {
+			m_WaveformInput = source,
+			m_SpectrumOutput = processedSpectrumBuffer,
+			m_SampleRate = m_SampleRate,
+			m_SamplesOut = m_OutputResolution,
+			m_OutputMultiplier = m_OutputMultiplier,
+			m_FreqMin = -m_MinFrequency,
+			m_FreqMax = m_MaxFrequency,
+			m_AudioDuration = m_AudioDuration,
+			m_SmoothingTimeConstant = m_SmoothingTimeConstant,
+			m_WindowSkew = m_WindowSkew
+		};
+
+		// Execute Job
+		JobHandle jobHandle = job.Schedule();
+		jobHandle.Complete();
+
+		// Copy Processed Job Buffer to Managed Array
+		processedSpectrumBuffer.CopyTo (processedSpectrum);
+		ProcessedAudioData = processedSpectrum;
+
+		// Dispose NativeArray
+		source.Dispose();
+		processedSpectrumBuffer.Dispose();
+	}
+
+	#if UNITY_EDITOR
+		private void OnDrawGizmosSelected() {
+			Handles.color = Color.white;
+
+			if (ProcessedAudioData != null) {
+				Handles.DrawAAPolyLine (2f, ProcessedAudioData.Select((y, i) => {
+					float remappedPosX = Remap (i / (ProcessedAudioData.Length - 1f), 0f, 1f, 0f, -m_DrawWidth);
+					return new Vector3 (remappedPosX, y, 0);
+				}).ToArray());
+			}
+		}
+	#endif
+}
+
+public struct Freq {
+	public Freq (float _low, float _mid, float _high) {
+		Low = _low;
+		Mid = _mid;
+		High = _high;
+	}
+
+	public float Low { get; private set; }
+	public float Mid { get; private set; }
+	public float High { get; private set; }
+}
