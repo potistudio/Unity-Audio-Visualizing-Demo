@@ -4,10 +4,6 @@ using UnityEngine;
 using Unity.Jobs;
 using Alchemy.Inspector;
 
-#if UNITY_EDITOR
-	using UnityEditor;
-#endif
-
 public class AudioSpectrum : MonoBehaviour {
 	[SerializeField] private AudioSource m_AudioSource;
 
@@ -98,19 +94,6 @@ public class AudioSpectrum : MonoBehaviour {
 		source.Dispose();
 		processedSpectrumBuffer.Dispose();
 	}
-
-	#if UNITY_EDITOR
-		private void OnDrawGizmosSelected() {
-			Handles.color = Color.white;
-
-			if (ProcessedAudioData != null) {
-				Handles.DrawAAPolyLine (2f, ProcessedAudioData.Select((y, i) => {
-					float remappedPosX = Remap (i / (ProcessedAudioData.Length - 1f), 0f, 1f, 0f, -m_DrawWidth);
-					return new Vector3 (remappedPosX, y, 0);
-				}).ToArray());
-			}
-		}
-	#endif
 }
 
 public struct Freq {
