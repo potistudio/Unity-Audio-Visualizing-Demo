@@ -15,7 +15,6 @@ public class AudioSpectrum : MonoBehaviour {
 	[Title("Output Settings")]
 	[SerializeField, LabelText("Resolution")] private int m_OutputResolution;
 	[SerializeField, LabelText("Multiplier")] private float m_OutputMultiplier;
-	[SerializeField, LabelText("Width")] private float m_DrawWidth;
 
 	[Title("Legacy Settings")]
 	[SerializeField] private float m_WindowSkew;
@@ -42,7 +41,6 @@ public class AudioSpectrum : MonoBehaviour {
 		if (m_OutputResolution < 0) m_OutputResolution = 0;
 		if (m_MinFrequency < 0) m_MinFrequency = 0;
 		if (m_MaxFrequency < 0) m_MaxFrequency = 0;
-		if (m_DrawWidth < 0f) m_DrawWidth = 0f;
 		if (m_WindowSkew < 0f) m_WindowSkew = 0f;
 		if (m_SmoothingTimeConstant < 0f) m_SmoothingTimeConstant = 0f;
 		if (m_SmoothingTimeConstant > 1f) m_SmoothingTimeConstant = 1f;

@@ -6,6 +6,7 @@ public class AudioSpectrumDrawer : UnityEngine.UI.Graphic {
 
 	[SerializeField] private float m_LeftOffset;
 	[SerializeField] private float m_RightOffset;
+	[SerializeField, Alchemy.Inspector.LabelText("Width")] private float m_DrawWidth;
 
 	private float Remap (float _x, float _inMin, float _inMax, float _outMin, float _outMax) {
 		return (_x - _inMax) / (_inMax - _inMin) * (_outMax - _outMin) + _outMin;
@@ -28,11 +29,15 @@ public class AudioSpectrumDrawer : UnityEngine.UI.Graphic {
 
 		for (int i = 0; i < m_AudioSpectrum.ProcessedAudioData.Length; i++) {
 			float remappedPosX = Remap (i / (m_AudioSpectrum.ProcessedAudioData.Length - 1f), 0f, 1f, m_LeftOffset, -Mathf.Abs(m_RightOffset - m_LeftOffset) + m_LeftOffset);
-			AddVerticalLine (vh, new Vector3(remappedPosX, 0f, 0f), m_AudioSpectrum.ProcessedAudioData[i], 4f, color);
+			AddVerticalLine (vh, new Vector3(remappedPosX, 0f, 0f), m_AudioSpectrum.ProcessedAudioData[i], m_DrawWidth, color);
 		}
 	}
 
 	private void Update() {
 		SetAllDirty();
+	}
+
+	override protected void OnValidate() {
+		if (m_DrawWidth < 0f) m_DrawWidth = 0f;
 	}
 }

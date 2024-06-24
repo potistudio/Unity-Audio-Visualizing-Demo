@@ -730,7 +730,6 @@ MonoBehaviour:
   m_MaxFrequency: 320
   m_OutputResolution: 120
   m_OutputMultiplier: 60
-  m_DrawWidth: 0
   m_WindowSkew: 0
   m_SmoothingTimeConstant: 0
 --- !u!222 &1672871533
@@ -760,6 +759,7 @@ MonoBehaviour:
   m_AudioSpectrum: {fileID: 1672871532}
   m_LeftOffset: -400
   m_RightOffset: 400
+  m_DrawWidth: 2
 --- !u!1 &1922855709
 GameObject:
   m_ObjectHideFlags: 0
