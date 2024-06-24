@@ -26,6 +26,7 @@ public class AudioSpectrum : MonoBehaviour {
 	public float OutputMultiplier { get { return m_OutputMultiplier; } set { m_OutputMultiplier = value; }}
 	public float[] ProcessedAudioData { get; private set; }
 
+	private GoertzelSpectrumMono m_GoertzelSpectrumMono;
 	private readonly float[] m_OutputAudioData = new float[8196];
 	private int m_SampleRate = 48000;
 
@@ -48,49 +49,54 @@ public class AudioSpectrum : MonoBehaviour {
 
 	private void Start() {
 		m_SampleRate = AudioSettings.outputSampleRate;
+		m_GoertzelSpectrumMono = new (m_OutputResolution, m_SampleRate, m_MinFrequency, m_MaxFrequency, m_SmoothingTimeConstant, m_WindowSkew, m_OutputMultiplier, m_AudioDuration);
 	}
 
 	private void Update() {
 		// Get Output Waveform
 		m_AudioSource.GetOutputData (m_OutputAudioData, 0);
 
-		//* Use Mono *// 17ms
-		// ProcessedAudioData = m_GoertzelSpectrumMono.Execute (m_OutputAudioData);
+		#region Use Mono
+			//* 11.6ms (resolution:200)
+			// ProcessedAudioData = m_GoertzelSpectrumMono.Execute (m_OutputAudioData);
+		#endregion
 
-		//* Use Job System *// 5ms
-		// Prepare Output Buffer
-		float[] processedSpectrum = new float[m_OutputResolution];
-		Unity.Collections.NativeArray<float> processedSpectrumBuffer = new (m_OutputResolution, Unity.Collections.Allocator.TempJob);
+		#region Use Job System
+			//* 2.2ms (resolution:200)
+			// Prepare Output Buffer
+			float[] processedSpectrum = new float[m_OutputResolution];
+			Unity.Collections.NativeArray<float> processedSpectrumBuffer = new (m_OutputResolution, Unity.Collections.Allocator.TempJob);
 
-		// Prepare Waveform Data as NativeArray
-		Unity.Collections.NativeArray<float> source = new (8196, Unity.Collections.Allocator.TempJob);
-		source.CopyFrom (m_OutputAudioData);
+			// Prepare Waveform Data as NativeArray
+			Unity.Collections.NativeArray<float> source = new (8196, Unity.Collections.Allocator.TempJob);
+			source.CopyFrom (m_OutputAudioData);
 
-		// Create Job
-		GoertzelSpectrumJob job = new() {
-			m_WaveformInput = source,
-			m_SpectrumOutput = processedSpectrumBuffer,
-			m_SampleRate = m_SampleRate,
-			m_SamplesOut = m_OutputResolution,
-			m_OutputMultiplier = m_OutputMultiplier,
-			m_FreqMin = -m_MinFrequency,
-			m_FreqMax = m_MaxFrequency,
-			m_AudioDuration = m_AudioDuration,
-			m_SmoothingTimeConstant = m_SmoothingTimeConstant,
-			m_WindowSkew = m_WindowSkew
-		};
+			// Create Job
+			GoertzelSpectrumJob job = new() {
+				m_WaveformInput = source,
+				m_SpectrumOutput = processedSpectrumBuffer,
+				m_SampleRate = m_SampleRate,
+				m_SamplesOut = m_OutputResolution,
+				m_OutputMultiplier = m_OutputMultiplier,
+				m_FreqMin = -m_MinFrequency,
+				m_FreqMax = m_MaxFrequency,
+				m_AudioDuration = m_AudioDuration,
+				m_SmoothingTimeConstant = m_SmoothingTimeConstant,
+				m_WindowSkew = m_WindowSkew
+			};
 
-		// Execute Job
-		JobHandle jobHandle = job.Schedule();
-		jobHandle.Complete();
+			// Execute Job
+			JobHandle jobHandle = job.Schedule();
+			jobHandle.Complete();
 
-		// Copy Processed Job Buffer to Managed Array
-		processedSpectrumBuffer.CopyTo (processedSpectrum);
-		ProcessedAudioData = processedSpectrum;
+			// Copy Processed Job Buffer to Managed Array
+			processedSpectrumBuffer.CopyTo (processedSpectrum);
+			ProcessedAudioData = processedSpectrum;
 
-		// Dispose NativeArray
-		source.Dispose();
-		processedSpectrumBuffer.Dispose();
+			// Dispose NativeArray
+			source.Dispose();
+			processedSpectrumBuffer.Dispose();
+		#endregion
 	}
 }
 
