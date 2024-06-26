@@ -321,7 +321,7 @@ GameObject:
   - component: {fileID: 613395553}
   - component: {fileID: 613395552}
   m_Layer: 0
-  m_Name: Floating Shapes VFX
+  m_Name: Reactive VFX
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -400,6 +400,9 @@ VisualEffect:
       - m_Value: 0.2
         m_Name: Size
         m_Overridden: 1
+      - m_Value: 512
+        m_Name: Rate
+        m_Overridden: 1
     m_Vector2f:
       m_Array: []
     m_Vector3f:
@@ -420,7 +423,7 @@ VisualEffect:
       m_Array:
       - m_Value: {fileID: 0}
         m_Name: Amplitude Map
-        m_Overridden: 1
+        m_Overridden: 0
       - m_Value: {fileID: 2800000, guid: 64ec7a5a1fe51584ebf5a8170fef5e60, type: 3}
         m_Name: Tex
         m_Overridden: 1
