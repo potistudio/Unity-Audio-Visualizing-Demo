@@ -728,13 +728,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_AudioSource: {fileID: 1922855710}
-  m_AudioDuration: 120
-  m_MinFrequency: 0
-  m_MaxFrequency: 320
-  m_OutputResolution: 120
+  m_SpectrumMethod:
+    rid: 6802756009231908867
+  m_AudioDuration: 160
+  m_MinFrequency: 20
+  m_MaxFrequency: 200
+  m_OutputResolution: 80
   m_OutputMultiplier: 60
   m_WindowSkew: 0
   m_SmoothingTimeConstant: 0
+  references:
+    version: 2
+    RefIds:
+    - rid: 6802756009231908867
+      type: {class: GoertzelBurstProxy, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!222 &1672871533
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -762,7 +770,7 @@ MonoBehaviour:
   m_AudioSpectrum: {fileID: 1672871532}
   m_LeftOffset: -400
   m_RightOffset: 400
-  m_DrawWidth: 2
+  m_DrawWidth: 7
 --- !u!1 &1922855709
 GameObject:
   m_ObjectHideFlags: 0
