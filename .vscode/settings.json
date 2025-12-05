@@ -56,5 +56,5 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "Audio-Visualizer.sln"
+    "dotnet.defaultSolution": "Audio-Visualizer.slnx",
 }
