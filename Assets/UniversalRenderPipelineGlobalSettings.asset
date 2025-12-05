@@ -66,7 +66,20 @@ MonoBehaviour:
       - rid: 1854571675020951582
       - rid: 1854571675020951583
     m_RuntimeSettings:
-      m_List: []
+      m_List:
+      - rid: 1854571675020951554
+      - rid: 1854571675020951556
+      - rid: 1854571675020951557
+      - rid: 1854571675020951558
+      - rid: 1854571675020951559
+      - rid: 1854571675020951563
+      - rid: 1854571675020951565
+      - rid: 1854571675020951572
+      - rid: 1854571675020951575
+      - rid: 1854571675020951576
+      - rid: 1854571675020951577
+      - rid: 1854571675020951580
+      - rid: 1854571675020951581
   m_AssetVersion: 9
   m_ObsoleteDefaultVolumeProfile: {fileID: 0}
   m_RenderingLayerNames:
@@ -167,7 +180,7 @@ MonoBehaviour:
       type: {class: RenderGraphSettings, ns: UnityEngine.Rendering.Universal, asm: Unity.RenderPipelines.Universal.Runtime}
       data:
         m_Version: 0
-        m_EnableRenderCompatibilityMode: 1
+        m_EnableRenderCompatibilityMode: 0
     - rid: 1854571675020951560
       type: {class: PostProcessData/TextureResources, ns: UnityEngine.Rendering.Universal, asm: Unity.RenderPipelines.Universal.Runtime}
       data:
@@ -211,7 +224,7 @@ MonoBehaviour:
       type: {class: URPShaderStrippingSetting, ns: UnityEngine.Rendering.Universal, asm: Unity.RenderPipelines.Universal.Runtime}
       data:
         m_Version: 0
-        m_StripUnusedPostProcessingVariants: 0
+        m_StripUnusedPostProcessingVariants: 1
         m_StripUnusedVariants: 1
         m_StripScreenCoordOverrideVariants: 1
     - rid: 1854571675020951565
@@ -280,7 +293,7 @@ MonoBehaviour:
       type: {class: RenderGraphGlobalSettings, ns: UnityEngine.Rendering, asm: Unity.RenderPipelines.Core.Runtime}
       data:
         m_version: 0
-        m_EnableCompilationCaching: 1
+        m_EnableCompilationCaching: 0
         m_EnableValidityChecks: 1
     - rid: 1854571675020951573
       type: {class: ProbeVolumeGlobalSettings, ns: UnityEngine.Rendering, asm: Unity.RenderPipelines.Core.Runtime}

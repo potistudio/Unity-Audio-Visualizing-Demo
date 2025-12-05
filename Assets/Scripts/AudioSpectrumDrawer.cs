@@ -37,7 +37,7 @@ public class AudioSpectrumDrawer : UnityEngine.UI.Graphic {
 		SetAllDirty();
 	}
 
-	override protected void OnValidate() {
-		if (m_DrawWidth < 0f) m_DrawWidth = 0f;
-	}
+	// protected void OnValidate() {
+	// 	if (m_DrawWidth < 0f) m_DrawWidth = 0f;
+	// }
 }

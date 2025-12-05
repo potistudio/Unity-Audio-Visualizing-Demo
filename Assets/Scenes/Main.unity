@@ -735,7 +735,7 @@ MonoBehaviour:
   m_SpectrumMethod:
     rid: 6802756009231908867
   m_AudioDuration: 160
-  m_MinFrequency: 20
+  m_MinFrequency: 0
   m_MaxFrequency: 200
   m_OutputResolution: 80
   m_OutputMultiplier: 60
